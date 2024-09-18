@@ -5,7 +5,7 @@
  <div class="article adm">
  <span style='color:#FF6600 ; font-size:4rem; text-align:center; font-weight: 
 700px;'>Adminitrateur : </span>
- <a href="index.php">Se deconnecter</a>
+ <a href="logout.php">Se deconnecter</a>
  </div>
  <?php
  if (isset($error)) {

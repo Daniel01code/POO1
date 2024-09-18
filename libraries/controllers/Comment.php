@@ -1,19 +1,21 @@
 <?php
 
 namespace controllers;
-
 require_once"libraries/utils.php";
-require_once"libraries/models/Article.php";
-require_once"libraries/models/Comment.php";
+// require_once"libraries/models/Article.php";
+// require_once"libraries/models/Comment.php";
+// require_once"libraries/controllers/Controllers.php";
 
-class Commentx{
 
-    public function comments_save(){
+class Comment extends controller{
+  protected $model_name = \Models\Comment::class;
+
+
+    public function save(){
         session_start();
     
-        $articleModel = new Article();
+        $articleModel = new \Models\Article();
         
-        $commentModel = new Comment();
         if(!$_SESSION['auth']){
           redirect("index.php");
         }
@@ -39,7 +41,7 @@ class Commentx{
               die("Ho ! L'article $article_id n'existe pas boloss !");
           }
           
-          $commentModel->insert($content,$article_id,$user_auth);
+          $this->model->insert($content,$article_id,$user_auth);
         
           // header("Location: article.php?id=" . $article_id);
           // exit;
@@ -48,12 +50,11 @@ class Commentx{
 
     }
 
-    public function comments_delete(){
+    public function delete(){
 
         session_start(); 
         $message="";
         
-        $commentModel = new Comment();
         if($_SESSION['role'] !== 'admin'){
             header("Location: index.php");
             exit();
@@ -65,13 +66,13 @@ class Commentx{
         
         $id_comment = $_GET['id'];
         
-        $commentaire = $commentModel->get_info($id_comment); 
+        $commentaire = $this->model->get_info($id_comment); 
         
         if (empty($commentaire)){
             die("Aucun commentaire n'a l'identifiant $id_comment !");
         }else{
              
-            $commentModel->delete($id_comment);
+          $this->model->delete($id_comment);
             
             redirect("article?id=".$commentaire['id_article']);
         }

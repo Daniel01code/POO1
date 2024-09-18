@@ -1,9 +1,8 @@
 <?php
+require_once"libraries/autoload.php"; 
 
-require_once"libraries/models/Users.php";
+$controllerModel = new \controllers\User();
 
-$logoutModel = new user();
-
-$logoutModel->logout();
+$controllerModel->logout();
 
 ?>

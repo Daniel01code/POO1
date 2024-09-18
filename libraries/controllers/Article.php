@@ -4,17 +4,18 @@
 namespace controllers; 
 
 require_once"libraries/utils.php";
-require_once"libraries/models/Article.php";
-require_once"libraries/models/Comment.php";
+// require_once"libraries/models/Article.php";
+// require_once"libraries/models/Comment.php";
+// require_once"libraries/controllers/Controllers.php";
 
 
-class Articles{
 
+class Article extends controller{
+
+    protected $model_name = \Models\Article::class;
     public function index(){
-        $articleModel = new Article();
 
-
-        $articles = $articleModel->find_all();
+        $articles = $this->model->find_all();
 
         // require"templates/articles/index_html.php";
 
@@ -23,10 +24,8 @@ class Articles{
     public function show(){
         session_start();
         $erreur="";
-            
-        $articleModel = new Article();
 
-        $commentModel = new Comment();
+        $commentModel = new \Models\Comment();
             
         $id_article = intval($_GET['id']);
 
@@ -36,7 +35,7 @@ class Articles{
             die("vous dever préciser un paramètre id valide de l'url !");
         }
 
-        $article = $articleModel->get_info($id_article,"articles");
+        $article = $this->model->get_info($id_article,"articles");
 
         // nombre de commentaires
         $nombre_de_commentaire= count($commentModel->find_comment_fot_this_article($id_article));
@@ -54,8 +53,6 @@ class Articles{
         session_start(); 
 
         $message="";
-        
-        $articleModel = new Article();
 
         if($_SESSION['role'] !== 'admin'){
                 header("Location: index.php");
@@ -63,9 +60,9 @@ class Articles{
         }
 
         if(isset($_GET['id'])){
-            $id_article =  clean_input((intval( $_GET['id'])));
+            $id_article =  (intval( $_GET['id']));
 
-            if($articleModel->delete($id_article)> 0){
+            if($this->model->delete($id_article)> 0){
                 $message ="<p class='success'>delete success</p>";
                 
                 redirect("admin_dashboard.php");
@@ -85,8 +82,6 @@ class Articles{
     public function updates(){
 
         session_start();
-            
-        $articleModel = new Article();
 
 
         if($_SESSION['role'] !== 'admin'){
@@ -100,7 +95,7 @@ class Articles{
 
         $articleId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         
-        $article = $articleModel->get_info($articleId );
+        $article = $this->model->get_info($articleId );
         
         if (!$article){
             echo "<p style='color: #fff;padding:20px; background:#FF6600; width:400px'>L'article n'existe pas.</p>";
@@ -119,6 +114,9 @@ class Articles{
         "<p style='color: #fff;padding:20px; background:#FF6600; width:400px'>$message</p>";
         }
         //traitement du formulaire de mise a jour
+        function clean_input($data){
+            return htmlspecialchars(stripslashes(trim($data)));
+        }
         if (isset($_POST['update'])) {
         // Nettoyage des entrées
         $title = clean_input(filter_input(INPUT_POST, 'title', FILTER_DEFAULT));
@@ -133,7 +131,7 @@ class Articles{
             $message = "Veuillez remplir tous les champs du formulaire !";
         } else {
 
-            $articleModel->Edit($title ,$slug , $introduction ,$content ,$articleId );
+            $this->model->Edit($title ,$slug , $introduction ,$content ,$articleId );
             // Message de succès
             $message = "<p style='text-align:center; color: #fff;padding:20px; background:green;margin-top:10px; width:300px'> 
             Étudiant modifié avec success</p>";
@@ -141,6 +139,42 @@ class Articles{
         }
 
         render('articles/edit_article', compact('message','title','slug','introduction','content','articleId'));
+
+
+    }
+    public function dashbordadmin(){
+        $erreur="";
+        session_start();
+
+        if($_SESSION['role'] !== 'admin'){
+            header("Location: index.php");
+            exit();
+        }
+        /*************************pour ajouter un article***************************************** */
+            if (isset($_POST['add_article'])) {
+            
+                $this->model->add();
+            }
+        
+
+        // Configuration
+        $articlesPerPage = 6; // Nombre d'articles par page
+        // Utilisation de filter_input pour une meilleure sécurité
+        $page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
+        // Récupération des articles depuis votre source de données
+        $allArticles = $this->model->find_all("created_at DESC"); // Fonction pour récupérer tous les articles
+        $totalArticles = count($allArticles); // Nombre total d'articles
+        // Calcul du nombre total de pages
+        $totalPages = ceil($totalArticles / $articlesPerPage);
+        // Vérification de la validité de la page demandée
+        $page = max(1, min($page, $totalPages));
+        // Calcul des indices de début des articles à afficher
+        $startIndex = ($page - 1) * $articlesPerPage;
+        // Récupération des articles à afficher pour la page actuelle
+        $articles = array_slice($allArticles, $startIndex, $articlesPerPage);
+        
+
+        render('admin/admin_dashboard', compact('articles','allArticles','totalPages','page','startIndex','totalArticles','articlesPerPage'));
 
 
     }

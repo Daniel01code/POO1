@@ -1,9 +1,9 @@
 <?php
+require_once"libraries/autoload.php"; 
 
-require_once"libraries/controllers/Articles.php";
+$controler = new controllers\Article();
 
-$updateModel = new Articles();
+$controler->updates();
 
-$updateModel->updates();
 
 ?>

@@ -1,8 +1,7 @@
 <?php
-require_once"libraries/controllers/Articles.php";
+require_once"libraries/autoload.php"; 
 
-$showModel = new Articles();
+$controler = new controllers\Article();
 
-$showModel->show();
-
+$controler->show();
 ?>

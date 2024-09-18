@@ -1,9 +1,11 @@
 
 <?php
-require_once"libraries/controllers/Comment.php";
+require_once"libraries/autoload.php"; 
 
-$deleteModel = new Commentx();
 
-$deleteModel->comments_save();
+$controler = new controllers\Comment();
+
+$controler->save();    
+
 
 

@@ -1,9 +1,10 @@
  <?php
-require_once"libraries/controllers/Articles.php";
 
-$indexModel = new Articles();
+require_once"libraries/autoload.php"; 
 
-$indexModel->index();
 
+$controler = new controllers\Article();
+
+$controler->index();
 ?>
 

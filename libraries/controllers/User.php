@@ -1,14 +1,19 @@
 <?php
 
 namespace controllers;
-require_once('libraries/models/Model.php');  
+
 require_once"libraries/utils.php";
+// require_once"libraries/models/Article.php";
+// require_once"libraries/models/Comment.php";
+// require_once"libraries/controllers/Controllers.php";
 
 
-class user extends Model{
+
+class user extends controller{
+    protected $model_name = \Models\User::class;
 
 public function register(){
-    $userModel = new \Model\user();
+    
         if (isset($_POST['register'])) {
 
             $username=htmlspecialchars($_POST['username']);
@@ -16,10 +21,10 @@ public function register(){
             $password=$_POST['password'];
             $confir_password =$_POST['confirm_password'];
               $errors = "";
-              $errors = $userModel->verify_input_register($username,$mail,$password,$confir_password);
+              $errors = $this->model->verify_input_register($username,$mail,$password,$confir_password);
            
              if (!$errors){
-                $userModel->register_user($username,$mail,$password,);
+                $this->model->register_user($username,$mail,$password,);
 
               redirect("login");
              }
@@ -28,11 +33,10 @@ public function register(){
           
         // require"templates/articles/register_html.php";
           
-    render('articles/register'/*, compact('errors')*/);
+    render('articles/register');
           
 }
 public function login(){
-    $userModel = new \Model\user();
 
         session_start();
 
@@ -42,16 +46,20 @@ public function login(){
             $password = $_POST['password'];
             if (!empty( $email) && !empty($password)) {
         
-                $user = $userModel->user_existe($email,$password);
-        
+                $user = $this->model->user_existe($email,$password);
+
+                
                 
                 // Si les informations de connexion sont correctes, on crée une session et on redirige vers la page d'accueil de l'admin ou l'utilisateur
         
-                if ($user && $user = $userModel->password_verify($_POST['password'], $user['password'])) {
+                if ($user &&  password_verify($_POST['password'], $user['password'])) {
+                    // var_dump($user);
+                    // die();
                     // $_SESSION['id_user'] = $user['id_user'];
                     $_SESSION['role'] = $user['role'];
                     $_SESSION['auth'] = $user;
                     $_SESSION['id'] = $user['id'];
+                    
                    
         
                     // Redirection en fonction du rôle
@@ -59,13 +67,13 @@ public function login(){
                         case 'admin':
                             // header("Location: admin_dashboard.php?id=" . $_SESSION['auth']['id']);
         
-                            redirect("admin_dashboard.php?id=" . $_SESSION['auth']['id']);
+                            redirect("admin_dashboard.php");
                             
                             break;
         
                         default:
-                            // header("Location: user_dashboard.php?id=" . $_SESSION['auth']['id']);
-                            redirect("user_dashboard.php?id=" . $_SESSION['auth']['id']);
+                            // header("Location: user_dashboard.php?id=" . $_SESSION['auth']['id']);  
+                            redirect("user_dashboard.php");
                             break;
                     }
                 } else {
@@ -89,5 +97,29 @@ public function logout(){
         redirect("index.php");
 
 }
+public function userdahbord(){
+        session_start();
+
+        $articleModel = new \Models\Article();
+
+
+        if($_SESSION['role'] !== 'default'){
+
+                redirect("index.php");
+        }
+        // var_dump($_SESSION['auth']);
+        // die();
+
+        //recuperation des articles
+
+        $articles = $articleModel->find_all("created_at DESC");
+
+        // require"templates/users/user_dashboard_html.php";
+
+
+        render('users/user_dashboard', compact('articles'));
+
+}
+
 
 }

@@ -1,8 +1,8 @@
 <?php
-require_once"libraries/controllers/Articles.php";
+require_once"libraries/autoload.php"; 
 
-$deleteModel = new Articles();
+$controler = new controllers\Article();
 
-$deleteModel->delete();
+$controler->delete();
 
 ?>

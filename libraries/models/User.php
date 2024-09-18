@@ -1,22 +1,18 @@
-
-<?php 
-
-namespace Model;
-
-require_once("libraries/models/Model.php");
-
-class user extends Model {
+<?php
+namespace Models; 
+  
+class User extends Model {
 
     protected $table="users";
 
-    /******************************************fontion user****************************************************** */
+    /******************************************fonction user****************************************************** */
 
     function verify_input_register($username,$email,$password,$confir_password){
         // Pseudo--------------------------------
         if (!isset($username) || !preg_match("#^[a-zA-Z0-9_]+$#", $_POST['username'])) {
         
         
-        return $errors = "Pseudo non valide";
+         return $errors = "Pseudo non valide";
         
         } else{
         
@@ -78,7 +74,6 @@ class user extends Model {
             ]);
      return $user = $query->fetch();
     }
-    
 
 
 }

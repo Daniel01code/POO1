@@ -1,10 +1,6 @@
 <?php
-namespace Model;
+ namespace Models; 
 
-require_once('libraries/models/Model.php');  
- 
-
-// namespace Models;
 
 class Comment extends Model{
 

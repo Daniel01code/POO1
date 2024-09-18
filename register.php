@@ -1,10 +1,13 @@
 <?php
 
-require_once"libraries/models/Users.php";
+require_once"libraries/autoload.php"; 
 
-$registerModel = new user();
 
-$registerModel->register();
+
+$controllerModel = new \controllers\User();
+
+$controllerModel->register();
+
 
 
 ?>
