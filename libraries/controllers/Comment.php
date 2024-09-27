@@ -1,10 +1,6 @@
 <?php
 
 namespace controllers;
-require_once"libraries/utils.php";
-// require_once"libraries/models/Article.php";
-// require_once"libraries/models/Comment.php";
-// require_once"libraries/controllers/Controllers.php";
 
 
 class Comment extends controller{
@@ -17,7 +13,7 @@ class Comment extends controller{
         $articleModel = new \Models\Article();
         
         if(!$_SESSION['auth']){
-          redirect("index.php");
+          \Http::redirect("index.php");
         }
         
         $user_auth = $_SESSION['auth']['id'];
@@ -45,7 +41,7 @@ class Comment extends controller{
         
           // header("Location: article.php?id=" . $article_id);
           // exit;
-          redirect("article.php?id=" . $article_id);
+          \Http::redirect("article.php?id=" . $article_id);
         }        
 
     }
@@ -56,8 +52,8 @@ class Comment extends controller{
         $message="";
         
         if($_SESSION['role'] !== 'admin'){
-            header("Location: index.php");
-            exit();
+
+            \Http::redirect("index.php");
         }
         
         if (empty($_GET['id']) || !ctype_digit($_GET['id'])) {
@@ -74,7 +70,7 @@ class Comment extends controller{
              
           $this->model->delete($id_comment);
             
-            redirect("article?id=".$commentaire['id_article']);
+          \Http::redirect("article?id=".$commentaire['id_article']);
         }
     }
 

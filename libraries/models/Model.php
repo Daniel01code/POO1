@@ -1,15 +1,13 @@
 <?php
 namespace Models;
 
-require_once"libraries/database.php";
-
 
 abstract class Model{
     protected $pdo;
     protected $table;
 
     public function __construct() {
-        $this->pdo = getpdo();
+        $this->pdo = \Database::getpdo();
     }
     public function get_info($id){
     

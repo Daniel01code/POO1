@@ -2,17 +2,10 @@
 
 namespace controllers;
 
-require_once"libraries/utils.php";
-// require_once"libraries/models/Article.php";
-// require_once"libraries/models/Comment.php";
-// require_once"libraries/controllers/Controllers.php";
-
-
-
 class user extends controller{
     protected $model_name = \Models\User::class;
 
-public function register(){
+    public function register(){
     
         if (isset($_POST['register'])) {
 
@@ -26,14 +19,14 @@ public function register(){
              if (!$errors){
                 $this->model->register_user($username,$mail,$password,);
 
-              redirect("login");
+                \Http::redirect("login");
              }
         }
            
           
         // require"templates/articles/register_html.php";
           
-    render('articles/register');
+        \Renderer::render('articles/register');
           
 }
 public function login(){
@@ -67,13 +60,13 @@ public function login(){
                         case 'admin':
                             // header("Location: admin_dashboard.php?id=" . $_SESSION['auth']['id']);
         
-                            redirect("admin_dashboard.php");
+                            \Http::redirect("admin_dashboard.php");
                             
                             break;
         
                         default:
                             // header("Location: user_dashboard.php?id=" . $_SESSION['auth']['id']);  
-                            redirect("user_dashboard.php");
+                            \Http::redirect("user_dashboard.php");
                             break;
                     }
                 } else {
@@ -84,7 +77,7 @@ public function login(){
             }
         }
         
-        render('articles/login');
+        \Renderer::render('articles/login');
         
         
 }
@@ -94,7 +87,7 @@ public function logout(){
         session_destroy();
         // header("location: index.php");
         // exit();
-        redirect("index.php");
+        \Http::redirect("index.php");
 
 }
 public function userdahbord(){
@@ -105,7 +98,7 @@ public function userdahbord(){
 
         if($_SESSION['role'] !== 'default'){
 
-                redirect("index.php");
+            \Http::redirect("index.php");
         }
         // var_dump($_SESSION['auth']);
         // die();
@@ -117,7 +110,7 @@ public function userdahbord(){
         // require"templates/users/user_dashboard_html.php";
 
 
-        render('users/user_dashboard', compact('articles'));
+        \Renderer::render('users/user_dashboard', compact('articles'));
 
 }
 

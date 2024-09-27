@@ -3,11 +3,6 @@
 
 namespace controllers; 
 
-require_once"libraries/utils.php";
-// require_once"libraries/models/Article.php";
-// require_once"libraries/models/Comment.php";
-// require_once"libraries/controllers/Controllers.php";
-
 
 
 class Article extends controller{
@@ -19,7 +14,7 @@ class Article extends controller{
 
         // require"templates/articles/index_html.php";
 
-        render('articles/index', compact('articles'));
+        \Renderer::render('articles/index', compact('articles'));
     }
     public function show(){
         session_start();
@@ -46,7 +41,7 @@ class Article extends controller{
 
         // require"templates/articles/show_html.php";
 
-        render('articles/show', compact('article','commentaires','nombre_de_commentaire','erreur'));
+        \Renderer::render('articles/show', compact('article','commentaires','nombre_de_commentaire','erreur'));
 
     }
     public function delete(){
@@ -55,8 +50,8 @@ class Article extends controller{
         $message="";
 
         if($_SESSION['role'] !== 'admin'){
-                header("Location: index.php");
-                exit();
+
+            \Http::redirect("index.php");
         }
 
         if(isset($_GET['id'])){
@@ -65,11 +60,11 @@ class Article extends controller{
             if($this->model->delete($id_article)> 0){
                 $message ="<p class='success'>delete success</p>";
                 
-                redirect("admin_dashboard.php");
+                \Http::redirect("admin_dashboard.php");
 
             }else{
                 $message ="auccun livre touvé";
-                redirect("admin_dashboard.php");
+                \Http::redirect("admin_dashboard.php");
             }
 
         }else{
@@ -138,7 +133,7 @@ class Article extends controller{
         }
         }
 
-        render('articles/edit_article', compact('message','title','slug','introduction','content','articleId'));
+        \Renderer::render('articles/edit_article', compact('message','title','slug','introduction','content','articleId'));
 
 
     }
@@ -147,8 +142,8 @@ class Article extends controller{
         session_start();
 
         if($_SESSION['role'] !== 'admin'){
-            header("Location: index.php");
-            exit();
+            
+            \Http::redirect('index.php');
         }
         /*************************pour ajouter un article***************************************** */
             if (isset($_POST['add_article'])) {
@@ -174,7 +169,7 @@ class Article extends controller{
         $articles = array_slice($allArticles, $startIndex, $articlesPerPage);
         
 
-        render('admin/admin_dashboard', compact('articles','allArticles','totalPages','page','startIndex','totalArticles','articlesPerPage'));
+        \Renderer::render('admin/admin_dashboard', compact('articles','allArticles','totalPages','page','startIndex','totalArticles','articlesPerPage'));
 
 
     }
